@@ -17,7 +17,11 @@ export default function Layout({children}) {
 
   useEffect(() => {
     async function getUserMetaData() {
-      const { email } = await magic.user.getMetadata();
+      const da = await magic.user.getMetadata();
+      const didToken = await magic.user.getIdToken();
+      console.log({didToken});
+      const email = da.email;
+      console.log(da);
       if (email) setUsername(email);
     }
     getUserMetaData();

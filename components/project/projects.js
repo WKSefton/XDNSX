@@ -30,7 +30,7 @@ export default function Projects({ projectData }) {
         </>
       ) : (
         projectData.map(project => {
-          return <Project key={project.id} data={project}/>
+          return (<><Project key={project.id} data={project} /><br /></>)
         })
       )}
 

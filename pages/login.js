@@ -26,11 +26,11 @@ export default function Login() {
 
   async function handleLoginWithEmail(e) {
     e.preventDefault();
-    setIsLoading(true);
     if (email) {
       try {
+        setIsLoading(true);
         const didToken = await magic.auth.loginWithMagicLink({ email });
-        if (didToken) router.push('/').then(setIsLoading(false));
+        if (didToken) router.push('/');
       } catch (err) {
         setIsLoading(false);
         console.log('Something Went Wrong Logging In', err);

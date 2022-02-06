@@ -16,7 +16,6 @@ function GeoLocation() {
     setLocationErrorMsg('Unable to retrieve your location');
   };
   const getGeoLocation = () => {
-      console.log("HIT");
     if (!navigator.geolocation) {
       setLocationErrorMsg('Geolocation is not supported by your browser');
     } else {
