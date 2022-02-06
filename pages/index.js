@@ -6,6 +6,8 @@ import { magic } from '../lib/magic-client';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { MenuIcon, XIcon } from '@heroicons/react/outline';
 
+import Projects from '../components/project/projects';
+import projectData from '../data/projects.json'
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
@@ -27,7 +29,6 @@ export default function Home() {
     try {
       await magic.user.logout();
       router.push('/login');
-      console.log('LOGOUT');
     } catch (err) {
       console.log('Error Signing Out', err);
     }
@@ -179,7 +180,9 @@ export default function Home() {
         </Disclosure>
 
         <main>
-          <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8"></div>
+          <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+            <Projects projectData={projectData}/>
+          </div>
         </main>
       </div>
     </>
