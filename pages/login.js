@@ -45,7 +45,7 @@ export default function Login() {
 
   return (
     <>
-          <Head>
+      <Head>
         <title>XDNSX Sign In</title>
       </Head>
       <div className="min-h-full flex">
@@ -163,7 +163,7 @@ export default function Login() {
                     </label>
                     <div className="mt-1">
                       <input
-                      onChange={handleOnChangeEmail}
+                        onChange={handleOnChangeEmail}
                         id="email"
                         name="email"
                         type="email"
@@ -213,7 +213,7 @@ export default function Login() {
                   <div>
                     <p>{userMsg}</p>
                     <button
-                    onClick={handleLoginWithEmail}
+                      onClick={handleLoginWithEmail}
                       type="submit"
                       className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                     >

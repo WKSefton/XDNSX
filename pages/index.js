@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { Fragment, useEffect, useState } from 'react';
-
+import Link from 'next/link';
 import { magic } from '../lib/magic-client';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { MenuIcon, XIcon } from '@heroicons/react/outline';
@@ -22,17 +22,18 @@ export default function Home() {
     getUserMetaData();
   }, []);
 
-  async function signOut() {
+  async function signOut(e) {
+    e.preventDefault();
     try {
-      router.push('/login');
       await magic.user.logout();
-      console.log("LOGOUT")
+      router.push('/login');
+      console.log('LOGOUT');
     } catch (err) {
       console.log('Error Signing Out', err);
     }
   }
-  const navigation = [{ name: 'Projects', href: '#', current: true }];
-  const userNavigation = [{ name: 'Sign out', func: signOut }];
+  const navigation = [{ name: 'Projects', href: '/', current: true }];
+  const userNavigation = [{ name: 'Sign out', href: '/login', func: signOut }];
 
   return (
     <>
@@ -51,19 +52,19 @@ export default function Home() {
                     <div className="hidden md:block">
                       <div className="ml-10 flex items-baseline space-x-4">
                         {navigation.map((item) => (
-                          <a
-                            key={item.name}
-                            href={item.href}
-                            className={classNames(
-                              item.current
-                                ? 'bg-gray-900 text-white'
-                                : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                              'px-3 py-2 rounded-md text-sm font-medium'
-                            )}
-                            aria-current={item.current ? 'page' : undefined}
-                          >
-                            {item.name}
-                          </a>
+                          <Link key={item.name} href={item.href}>
+                            <a
+                              className={classNames(
+                                item.current
+                                  ? 'bg-gray-900 text-white'
+                                  : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                                'px-3 py-2 rounded-md text-sm font-medium'
+                              )}
+                              aria-current={item.current ? 'page' : undefined}
+                            >
+                              {item.name}
+                            </a>
+                          </Link>
                         ))}
                       </div>
                     </div>
@@ -91,17 +92,19 @@ export default function Home() {
                         >
                           <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
                             {userNavigation.map((item) => (
-                              <Menu.Item key={item.name}>
+                              <Menu.Item key={item.name} as={Fragment}>
                                 {({ active }) => (
-                                  <a
-                                    onClick={() => item.func()}
-                                    className={classNames(
-                                      active ? 'bg-gray-100' : '',
-                                      'block px-4 py-2 text-sm text-gray-700'
-                                    )}
-                                  >
-                                    {item.name}
-                                  </a>
+                                  <Link href={item.href}>
+                                    <a
+                                      onClick={item.func}
+                                      className={classNames(
+                                        active ? 'bg-gray-100' : '',
+                                        'block px-4 py-2 text-sm text-gray-700'
+                                      )}
+                                    >
+                                      {item.name}
+                                    </a>
+                                  </Link>
                                 )}
                               </Menu.Item>
                             ))}
@@ -157,13 +160,15 @@ export default function Home() {
                   </div>
                   <div className="mt-3 px-2 space-y-1">
                     {userNavigation.map((item) => (
-                      <Disclosure.Button
-                        key={item.name}
-                        as="a"
-                        
-                        className="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700"
-                      >
-                        <span onClick={() => item.func()}>{item.name}</span>
+                      <Disclosure.Button key={item.name} as={Fragment}>
+                        <Link href={item.href}>
+                          <a
+                            onClick={item.func}
+                            className="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700"
+                          >
+                            {item.name}
+                          </a>
+                        </Link>
                       </Disclosure.Button>
                     ))}
                   </div>
