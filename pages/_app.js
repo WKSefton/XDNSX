@@ -1,6 +1,8 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { magic } from '../lib/magic-client';
+
+import 'tailwindcss/tailwind.css'
 import '../styles/globals.css';
 
 import Loading from '../components/loading/loading'

@@ -5,7 +5,8 @@
     top: 50%;
     left: 50%;
     overflow: hidden;
-    
+    /* background: #2d2d2d; */
+
     width: 200px;
     height: 200px;
     
@@ -15,7 +16,7 @@
     perspective: 1000px;
     transform-style: perserve-3d;
   }
-  
+
   /* The dots */
   .dots {
     position: absolute;
