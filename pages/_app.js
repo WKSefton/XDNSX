@@ -2,25 +2,25 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { magic } from '../lib/magic-client';
 
-import 'tailwindcss/tailwind.css'
+import 'tailwindcss/tailwind.css';
 import '../styles/globals.css';
 
-import Loading from '../components/loading/loading'
-
+import Loading from '../components/loading/loading';
+import Layout from '../components/layout/layout';
+import Login from './login';
 function MyApp({ Component, pageProps }) {
-
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    async function isLoggedIn() {
-      const loggedIn = await magic.user.isLoggedIn();
-      if (loggedIn) router.push('/');
-      else router.push('/login');
-    }
+    // async function checkLoggedIn() {
+    //   setIsLoggedIn(await magic.user.isLoggedIn());
+    //   if (!isLoggedIn) router.push('/login');
+    // }
 
-    isLoggedIn();
+    // checkLoggedIn();
   }, []);
 
   useEffect(() => {
@@ -36,7 +36,13 @@ function MyApp({ Component, pageProps }) {
     };
   }, [router]);
 
-  return isLoading ? <Loading /> : <Component {...pageProps} />;
+  return isLoading ? (
+    <Loading />
+  ) : (
+    <Layout>
+      <Component {...pageProps} />
+    </Layout>
+  );
 }
 
 export default MyApp;
