@@ -1,10 +1,11 @@
 import { PlusIcon } from '@heroicons/react/solid';
 import Project from './project';
-export default function Projects({ projectData }) {
-  console.log({ projectData });
+
+export default function Projects({ projects }) {
+//console.log(projects)
   return (
     <div className="text-center">
-      {projectData.length < 1 ? (
+      {projects?.length < 1 ? (
         <>
           <svg
             className="mx-auto h-12 w-12 text-gray-400"
@@ -29,8 +30,8 @@ export default function Projects({ projectData }) {
           </p>
         </>
       ) : (
-        projectData.map(project => {
-          return (<><Project key={project.id} data={project} /><br /></>)
+        projects?.map(project => {
+          return (<Project key={project.id} data={project} />)
         })
       )}
 
@@ -46,3 +47,4 @@ export default function Projects({ projectData }) {
     </div>
   );
 }
+

@@ -1,6 +1,8 @@
 import { magicAdmin } from '../../lib/magic';
 import jwt from 'jsonwebtoken';
-import { isNewUser } from '../../lib/db/hasura';
+import { isNewUser, createNewUser } from '../../lib/db/hasura';
+import { setTokenCookie } from '../../lib/cookies';
+
 export default async function login(req, res) {
   if (req.method === 'POST') {
     try {
@@ -21,9 +23,12 @@ export default async function login(req, res) {
         process.env.HASURA_SECRET_KEY
       );
 
-      const newUser = await isNewUser(hasuraJWT, metadata.issuer);
+      if (await isNewUser(hasuraJWT, metadata.issuer))
+        await createNewUser(hasuraJWT, metadata);
 
-      res.status(200).json({ newUser });
+      await setTokenCookie(hasuraJWT, res);
+
+      res.status(200).json({ done: true });
     } catch (error) {
       console.log('Something Went Wrong Loggin In');
       res.status(500).json(error);

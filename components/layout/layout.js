@@ -5,42 +5,69 @@ import Link from 'next/link';
 import { magic } from '../../lib/magic-client';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { MenuIcon, XIcon } from '@heroicons/react/outline';
-
+import Loading from '../loading/loading';
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
 
-export default function Layout({children}) {
+export default function Layout({ children }) {
   const router = useRouter();
+  const [username, setUsername] = useState("");
+  const [didToken, setDidToken] = useState("");
 
-  const [username, setUsername] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    async function getUserMetaData() {
-      const da = await magic.user.getMetadata();
+  useEffect(async () => {
+    try {
+      setIsLoading(true);
+
+      const { email, issuer } = await magic.user.getMetadata();
       const didToken = await magic.user.getIdToken();
-      console.log({didToken});
-      const email = da.email;
-      console.log(da);
-      if (email) setUsername(email);
+      if (email) {
+        setUsername(email);
+        setDidToken(didToken);
+      }
+    } catch (error) {
+      console.error("Error retrieving email", error);
     }
-    getUserMetaData();
+    setIsLoading(false);
 
   }, []);
 
-  async function signOut(e) {
+  useEffect(() => {
+    const handleComplete = () => {
+      setIsLoading(false);
+    };
+    router.events.on('routeChangeComplete', handleComplete);
+    router.events.on('routeChangeError', handleComplete);
+
+    return () => {
+      router.events.off('routeChangeComplete', handleComplete);
+      router.events.off('routeChangeError', handleComplete);
+    };
+  }, [router]);
+  const signOut = async (e) => {
     e.preventDefault();
+
     try {
-      await magic.user.logout();
+      const response = await fetch('/api/logout', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${didToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const res = await response.json();
+    } catch (error) {
+      console.error('Error logging out', error);
       router.push('/login');
-    } catch (err) {
-      console.log('Error Signing Out', err);
     }
   }
-  const navigation = [{ name: 'Projects', href: '/', current: true }];
-  const userNavigation = [{ name: 'Sign out', href: '/login', func: signOut }];
+  const navigation = [{ name: 'Projects', current: true }];
+  const userNavigation = [{ name: 'Sign out', func: signOut }];
 
-  return (
+  return  (
     <>
       <div className="min-h-full">
         <Disclosure as="nav" className="bg-gray-800">
@@ -57,8 +84,8 @@ export default function Layout({children}) {
                     <div className="hidden md:block">
                       <div className="ml-10 flex items-baseline space-x-4">
                         {navigation.map((item) => (
-                          <Link key={item.name} href={item.href}>
-                            <a
+                         
+                            <a key={item.name}
                               className={classNames(
                                 item.current
                                   ? 'bg-gray-900 text-white'
@@ -69,7 +96,7 @@ export default function Layout({children}) {
                             >
                               {item.name}
                             </a>
-                          </Link>
+                        
                         ))}
                       </div>
                     </div>
@@ -99,17 +126,15 @@ export default function Layout({children}) {
                             {userNavigation.map((item) => (
                               <Menu.Item key={item.name} as={Fragment}>
                                 {({ active }) => (
-                                  <Link href={item.href}>
-                                    <a
-                                      onClick={item.func}
-                                      className={classNames(
-                                        active ? 'bg-gray-100' : '',
-                                        'block px-4 py-2 text-sm text-gray-700'
-                                      )}
-                                    >
-                                      {item.name}
-                                    </a>
-                                  </Link>
+                                  <a
+                                    onClick={item.func}
+                                    className={classNames(
+                                      active ? 'bg-gray-100' : '',
+                                      'block px-4 py-2 text-sm text-gray-700'
+                                    )}
+                                  >
+                                    {item.name}
+                                  </a>
                                 )}
                               </Menu.Item>
                             ))}
@@ -140,8 +165,7 @@ export default function Layout({children}) {
                   {navigation.map((item) => (
                     <Disclosure.Button
                       key={item.name}
-                      as="a"
-                      href={item.href}
+                      as="a"              
                       className={classNames(
                         item.current
                           ? 'bg-gray-900 text-white'
@@ -166,14 +190,12 @@ export default function Layout({children}) {
                   <div className="mt-3 px-2 space-y-1">
                     {userNavigation.map((item) => (
                       <Disclosure.Button key={item.name} as={Fragment}>
-                        <Link href={item.href}>
-                          <a
-                            onClick={item.func}
-                            className="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700"
-                          >
-                            {item.name}
-                          </a>
-                        </Link>
+                        <a
+                          onClick={item.func}
+                          className="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700"
+                        >
+                          {item.name}
+                        </a>
                       </Disclosure.Button>
                     ))}
                   </div>
@@ -185,7 +207,7 @@ export default function Layout({children}) {
 
         <main>
           <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-                        {children}
+            {children}
           </div>
         </main>
       </div>

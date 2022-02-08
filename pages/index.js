@@ -2,26 +2,38 @@ import { useEffect } from 'react';
 
 import Projects from '../components/project/projects';
 import GeoLocation from '../hooks/geoLocation';
+
+import Layout from '../components/layout/layout';
+import RedirectUser from '../lib/utils/redirectUser';
 import projectData from '../data/projects.json';
-import {startExecuteMyMutation} from '../lib/db/hasura'
-export default function Home() {
+
+export async function getServerSideProps(context) {
+  const { userId, token } = RedirectUser(context);
+  const projects = projectData;
+  return {
+    props: {
+      projects,
+    },
+  };
+}
+
+export default function Home({ projects }) {
+  //console.log("INDEX", projects)
   const { latLong, getGeoLocation, locationErrorMsg, findingLocation } =
     GeoLocation();
 
   useEffect(() => {
-    startExecuteMyMutation({"asdf":"asdf"})
-    getGeoLocation()
+    getGeoLocation();
   }, []);
+
   return (
-    <>
-
-
-      <Projects projectData={projectData} />
+    <Layout>
+      <Projects projects={projects} />
 
       <span className="block px-3 py-2 rounded-md text-base font-medium text-gray-400 ">
         {findingLocation ? 'Locating...' : 'Your Location:'}{' '}
         {locationErrorMsg.length > 1 ? locationErrorMsg : latLong}
       </span>
-    </>
+    </Layout>
   );
 }
