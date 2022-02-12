@@ -7,12 +7,12 @@ export async function middleware(req) {
 
   const { pathname } = req.nextUrl;
   if(pathname.includes('/api/login') || userId || pathname.includes('/static')) {
-    console.log("NEXT", pathname, userId)
+    //console.log("NEXT", pathname, userId)
     return NextResponse.next();
   }
   
   if (!token && pathname !== '/login') {
-    console.log("LOGIN", pathname)
+    //console.log("LOGIN", pathname)
     return NextResponse.redirect('/login');
   }
 }
