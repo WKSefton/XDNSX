@@ -5,9 +5,10 @@ import 'tailwindcss/tailwind.css';
 import '../styles/globals.css';
 
 import Layout from '../components/layout/layout';
-import Footer from "../components/layout/footer";
+
 
 export default function MyApp({Component, pageProps}) {
+
     const router = useRouter();
     const [isLoginPage, setIsLoginPage] = useState(false);
 
@@ -17,12 +18,9 @@ export default function MyApp({Component, pageProps}) {
         else setIsLoginPage(false);
     }, [router]);
     return (isLoginPage ? <Component {...pageProps} /> :
-
             <Layout>
                 <Component {...pageProps} />
-                <Footer/>
+                {/*<Footer/>*/}
             </Layout>
-
-
     );
 }

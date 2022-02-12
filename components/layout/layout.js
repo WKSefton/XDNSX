@@ -6,20 +6,30 @@ import {MenuIcon, XIcon} from '@heroicons/react/outline';
 import Loading from '../loading/loading';
 import Link from 'next/link';
 import {classNames} from '../../lib/utils/classNames';
+import {getTokenCookie} from "../../lib/cookies";
+import {getProjects} from "../../lib/db/hasura";
 
-export default function Layout({children}) {
+export default function Layout({context, children, ...pageProps}) {
+    console.log({pageProps})
     const router = useRouter();
     const [username, setUsername] = useState('');
     const [didToken, setDidToken] = useState('');
+    const [projects, setProjects] = useState([]);
 
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(async () => {
         try {
-            //setIsLoading(true);
+            setIsLoading(true);
 
             const {email, issuer} = await magic.user.getMetadata();
             const didToken = await magic.user.getIdToken();
+            // console.log(await magic.user.parameters())
+            const token = await getTokenCookie()
+            // const {userId, token} = await RedirectUser(context);
+            const {projects} = await getProjects(token, issuer);
+            setProjects(projects)
+            console.log(projects)
             if (email) {
                 setUsername(email);
                 setDidToken(didToken);
@@ -27,21 +37,21 @@ export default function Layout({children}) {
         } catch (error) {
             console.error('Error retrieving email', error);
         }
-        // setIsLoading(false);
+        setIsLoading(false);
     }, []);
 
-    // useEffect(() => {
-    //   const handleComplete = () => {
-    //     setIsLoading(false);
-    //   };
-    //   router.events.on('routeChangeComplete', handleComplete);
-    //   router.events.on('routeChangeError', handleComplete);
+    useEffect(() => {
+        const handleComplete = () => {
+            setIsLoading(false);
+        };
+        router.events.on('routeChangeComplete', handleComplete);
+        router.events.on('routeChangeError', handleComplete);
 
-    //   return () => {
-    //     router.events.off('routeChangeComplete', handleComplete);
-    //     router.events.off('routeChangeError', handleComplete);
-    //   };
-    // }, [router]);
+        return () => {
+            router.events.off('routeChangeComplete', handleComplete);
+            router.events.off('routeChangeError', handleComplete);
+        };
+    }, [router]);
 
     const signOut = async (e) => {
         e.preventDefault();
@@ -63,17 +73,15 @@ export default function Layout({children}) {
     };
 
     const navigation = [
-        {name: 'Projects', href: '/', current: true},
-        {name: 'Calendar', current: false},
+        {name: 'Finance', href: '/finance', current: false},
+        {name: 'Calendar', href: '/calendar', current: false},
         {name: 'Pricing', href: '/pricing', current: false},
         {name: 'About', href: '/about', current: false},
     ];
     const userNavigation = [{name: 'Sign out', func: signOut}];
 
-    return isLoading ? (
-        <Loading/>
-    ) : (
-        <div className=" min-h-full">
+    return (
+        <div className="flex flex-grow flex-col min-h-screen">
             <Disclosure as="nav" className="bg-gray-800">
                 {({open}) => (
                     <>
@@ -227,7 +235,9 @@ export default function Layout({children}) {
             </Disclosure>
 
             <main>
-                <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+                <div className="mt-9 mx-auto sm:px-6 lg:px-8">
+                    {isLoading ? <Loading/> : null}
+
                     {children}
                 </div>
             </main>
