@@ -5,8 +5,9 @@ import 'tailwindcss/tailwind.css';
 import '../styles/globals.css';
 
 import Layout from '../components/layout/layout';
+import {AppWrapper} from "../lib/utils/state";
 
-
+const Noop = ({children}) => <>{children}</>;
 export default function MyApp({Component, pageProps}) {
 
     const router = useRouter();
@@ -17,10 +18,13 @@ export default function MyApp({Component, pageProps}) {
         if (router.asPath == '/login') setIsLoginPage(true);
         else setIsLoginPage(false);
     }, [router]);
-    return (isLoginPage ? <Component {...pageProps} /> :
-            <Layout>
-                <Component {...pageProps} />
-                {/*<Footer/>*/}
-            </Layout>
+    const AppWrapper = Component.provider || Noop;
+    return (isLoginPage ? <Component/> :
+            <AppWrapper>
+                <Layout>
+                    <Component {...pageProps} />
+                    {/*<Footer/>*/}
+                </Layout>
+            </AppWrapper>
     );
 }

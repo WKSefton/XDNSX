@@ -7,6 +7,7 @@ import {
     DotsHorizontalIcon,
 } from '@heroicons/react/solid'
 import {Menu, Transition} from '@headlessui/react'
+import {classNames} from "../lib/utils/classNames";
 
 const days = [
     {date: '2021-12-27', events: []},
@@ -81,11 +82,9 @@ const days = [
 ]
 const selectedDay = days.find((day) => day.isSelected)
 
-function classNames(...classes) {
-    return classes.filter(Boolean).join(' ')
-}
 
 export default function Calendar() {
+
     return (
         <div className="lg:flex lg:h-full lg:flex-col">
             <header className="relative z-20 flex items-center justify-between border-b border-gray-200 py-4 px-6 lg:flex-none">
