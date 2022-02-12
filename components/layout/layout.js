@@ -19,7 +19,7 @@ export default function Layout({children, ...pageProps}) {
     const [isLoading, setIsLoading] = useState(true);
     const {latLong, getGeoLocation, locationErrorMsg, findingLocation} =
         GeoLocation();
-    console.log("APP", state)
+    //console.log("APP", state)
     useEffect(async () => {
         try {
             setIsLoading(true);

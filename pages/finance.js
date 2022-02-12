@@ -40,36 +40,43 @@ const attachments = [
 //     };
 // }
 
-
+Finance.componentWillUnmount = () => {
+    state.expenses = expenses
+    state.incomes = incomes
+    //console.log("UNMOUNT")
+}
 export default function Finance() {
     const router = useRouter()
     const state = useAppContext()
 
-    const [expenses, setExpenses] = useState([]);
-    const [incomes, setIncomes] = useState([]);
+    const [expenses, setExpenses] = useState(state.expenses);
+    const [incomes, setIncomes] = useState(state.incomes);
+
     const [totalExpenses, setTotalExpenses] = useState(0);
     const [totalIncome, setTotalIncomes] = useState(0);
 
-    console.log(expenses, incomes)
-    useEffect(async () => {
-        // setInterval(async () => {
 
-        if (!state.token || !state.issuer)
-            await router.push('/login')
+    //console.log(expenses, incomes)
+    useEffect(async () => {
+        // if (!state.token || !state.issuer)
+        //     await router.push('/login')
+
         if (!state.projects) {
             const data = await getProjects(state.token, state.issuer);
             if (data?.projects) {
                 state.projects = data.projects
 
-                console.log("DATA RET", state.projects)
+                //console.log("DATA RET", state.projects)
                 const {incomes, expenses} = data.projects[0].data
                 setIncomes(incomes)
                 setExpenses(expenses)
             }
-        } else {
+        } else if (!incomes || !expenses) {
+            //console.log("DATA RET 2", state.projects)
+            const {incomes, expenses} = state.projects[0].data
+            setIncomes(incomes)
+            setExpenses(expenses)
         }
-        // }, 5000)
-
     }, [])
 
 
@@ -77,12 +84,12 @@ export default function Finance() {
         const updatedProject = state.projects[0]
         updatedProject.data = {expenses, incomes}
         const update = await updateProject(state.token, state.projects[0])
-        console.log("SAVED", update)
+        //console.log("SAVED", update)
         const data = await getProjects(state.token, state.issuer);
         if (data?.projects) {
             state.projects = data.projects
 
-            console.log("DATA RET 2", state.projects)
+            //console.log("DATA RET 2", state.projects)
             const {incomes, expenses} = data.projects[0].data
             setIncomes(incomes)
             setExpenses(expenses)
@@ -92,13 +99,13 @@ export default function Finance() {
     function updateTotalExpense(e, index) {
         e.preventDefault()
         expenses[index].cost = e.target.valueAsNumber
-        console.log(e.target.valueAsNumber)
+        //console.log(e.target.valueAsNumber)
         let total = 0;
         for (let i = 0; i < expenses.length; i++) {
             if (expenses[i].frequency.id != 0)
                 total += expenses[i].cost
         }
-        console.log(total)
+        //console.log(total)
         setTotalExpenses(total)
         setExpenses(expenses)
     }
@@ -106,19 +113,19 @@ export default function Finance() {
     function updateTotalIncome(e, index) {
         e.preventDefault()
         incomes[index].cost = e.target.valueAsNumber
-        console.log(e.target.valueAsNumber)
+        //console.log(e.target.valueAsNumber)
         let total = 0;
         for (let i = 0; i < incomes.length; i++) {
             if (incomes[i].frequency.id != 0)
                 total += incomes[i].cost
         }
-        console.log(total)
+        //console.log(total)
         setTotalIncomes(total)
         setIncomes(incomes)
     }
 
     function changeExpenseFreq(selection, expense) {
-        console.log(selection, expense)
+        //console.log(selection, expense)
 
         for (let i = 0; i < expenses.length; i++) {
             if (expenses[i].id == expense.id) {
@@ -132,7 +139,7 @@ export default function Finance() {
     }
 
     function changeIncomeFreq(selection, income) {
-        console.log(selection, income)
+        //console.log(selection, income)
 
         for (let i = 0; i < incomes.length; i++) {
             if (incomes[i].id == income.id) {
