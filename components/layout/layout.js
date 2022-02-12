@@ -6,36 +6,42 @@ import {MenuIcon, XIcon} from '@heroicons/react/outline';
 import Loading from '../loading/loading';
 import Link from 'next/link';
 import {classNames} from '../../lib/utils/classNames';
+import {useAppContext} from "../../lib/utils/state";
 import {getTokenCookie} from "../../lib/cookies";
-import {getProjects} from "../../lib/db/hasura";
+import GeoLocation from "../../hooks/geoLocation";
 
-export default function Layout({context, children, ...pageProps}) {
-    console.log({pageProps})
+export default function Layout({children, ...pageProps}) {
     const router = useRouter();
+    const state = useAppContext()
     const [username, setUsername] = useState('');
     const [didToken, setDidToken] = useState('');
-    const [projects, setProjects] = useState([]);
 
     const [isLoading, setIsLoading] = useState(true);
-
+    const {latLong, getGeoLocation, locationErrorMsg, findingLocation} =
+        GeoLocation();
+    console.log("APP", state)
     useEffect(async () => {
         try {
             setIsLoading(true);
-
             const {email, issuer} = await magic.user.getMetadata();
             const didToken = await magic.user.getIdToken();
-            // console.log(await magic.user.parameters())
-            const token = await getTokenCookie()
-            // const {userId, token} = await RedirectUser(context);
-            const {projects} = await getProjects(token, issuer);
-            setProjects(projects)
-            console.log(projects)
-            if (email) {
+            if (email && didToken) {
                 setUsername(email);
                 setDidToken(didToken);
+                const token = await getTokenCookie()
+                state.token = token;
+                state.didToken = didToken;
+                state.email = email;
+                state.issuer = issuer;
+                getGeoLocation();
+                state.latLong = latLong;
+
+            } else {
+                await signOut()
             }
         } catch (error) {
             console.error('Error retrieving email', error);
+            await signOut()
         }
         setIsLoading(false);
     }, []);
@@ -54,7 +60,7 @@ export default function Layout({context, children, ...pageProps}) {
     }, [router]);
 
     const signOut = async (e) => {
-        e.preventDefault();
+        e?.preventDefault();
 
         try {
             const response = await fetch('/api/logout', {
