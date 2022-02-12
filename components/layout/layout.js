@@ -37,10 +37,11 @@ export default function Layout({children, ...pageProps}) {
                 state.latLong = latLong;
 
             } else {
-                router.push('/login')
+                await signOut()
             }
         } catch (error) {
             console.error('Error retrieving email', error);
+            await signOut()
         }
         setIsLoading(false);
     }, []);
@@ -59,7 +60,7 @@ export default function Layout({children, ...pageProps}) {
     }, [router]);
 
     const signOut = async (e) => {
-        e.preventDefault();
+        e?.preventDefault();
 
         try {
             const response = await fetch('/api/logout', {

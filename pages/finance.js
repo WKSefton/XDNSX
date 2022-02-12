@@ -4,6 +4,7 @@ import {useAppContext} from "../lib/utils/state";
 import {Fragment, useEffect, useState} from "react";
 import {Listbox, Transition} from '@headlessui/react'
 import {classNames} from "../lib/utils/classNames";
+import {useRouter} from "next/router";
 
 const frequency = [
     {id: 0, name: 'Never'},
@@ -41,6 +42,7 @@ const attachments = [
 
 
 export default function Finance() {
+    const router = useRouter()
     const state = useAppContext()
 
     const [expenses, setExpenses] = useState([]);
@@ -50,24 +52,41 @@ export default function Finance() {
 
     console.log(expenses, incomes)
     useEffect(async () => {
+        // setInterval(async () => {
+
+        if (!state.token || !state.issuer)
+            await router.push('/login')
         if (!state.projects) {
             const data = await getProjects(state.token, state.issuer);
             if (data?.projects) {
-
                 state.projects = data.projects
 
                 console.log("DATA RET", state.projects)
+                const {incomes, expenses} = data.projects[0].data
+                setIncomes(incomes)
+                setExpenses(expenses)
             }
         } else {
-
         }
+        // }, 5000)
+
     }, [])
+
 
     async function saveFinance() {
         const updatedProject = state.projects[0]
         updatedProject.data = {expenses, incomes}
         const update = await updateProject(state.token, state.projects[0])
         console.log("SAVED", update)
+        const data = await getProjects(state.token, state.issuer);
+        if (data?.projects) {
+            state.projects = data.projects
+
+            console.log("DATA RET 2", state.projects)
+            const {incomes, expenses} = data.projects[0].data
+            setIncomes(incomes)
+            setExpenses(expenses)
+        }
     }
 
     function updateTotalExpense(e, index) {
@@ -150,7 +169,7 @@ export default function Finance() {
                         <div className="border-t border-gray-200 px-4 py-5 sm:px-6">
                             <dl className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-2">
 
-                                {expenses.map((expense, i) => {
+                                {expenses?.map((expense, i) => {
                                     return <Fragment key={expense.id}>
                                         <div className="sm:col-span-1">
 
@@ -311,7 +330,7 @@ export default function Finance() {
                         <div className="border-t border-gray-200 px-4 py-5 sm:px-6">
                             <dl className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-2">
 
-                                {incomes.map((income, i) => {
+                                {incomes?.map((income, i) => {
                                     return <Fragment key={income.id}>
                                         <div className="sm:col-span-1">
 

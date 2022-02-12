@@ -11,7 +11,7 @@ export default async function login(req, res) {
             const metadata = await magicAdmin.users.getMetadataByToken(token);
             const hasuraJWT = jwt.sign(
                 {
-                    //...metadata,
+                    ...metadata,
                     iat: Math.floor(Date.now() / 1000),
                     exp: Math.floor(Date.now() / 1000 + 7 * 24 * 60 * 60),
                     'https://hasura.io/jwt/claims': {
