@@ -4,8 +4,8 @@ import {useRouter} from 'next/router';
 import 'tailwindcss/tailwind.css';
 import '../styles/globals.css';
 
-import Layout from '../components/layout/layout';
-import {AppWrapper} from "../lib/utils/state";
+import Layout from '../components/layout';
+import {AppWrapper} from "../lib/state";
 
 const Noop = ({children}) => <>{children}</>;
 export default function MyApp({Component, pageProps}) {

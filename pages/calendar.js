@@ -7,7 +7,7 @@ import {
     DotsHorizontalIcon,
 } from '@heroicons/react/solid'
 import {Menu, Transition} from '@headlessui/react'
-import {classNames} from "../lib/utils/classNames";
+import {classNames} from "../lib/classNames";
 
 const days = [
     {date: '2021-12-27', events: []},

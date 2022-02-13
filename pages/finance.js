@@ -1,10 +1,10 @@
 import {CheckIcon, SelectorIcon,} from '@heroicons/react/solid'
-import {getProjects, updateProject} from "../lib/db/hasura";
-import {useAppContext} from "../lib/utils/state";
-import {Fragment, useEffect, useState} from "react";
+import {getProjects, updateProject} from "../lib/hasura";
+import {Fragment, useState} from "react";
 import {Listbox, Transition} from '@headlessui/react'
-import {classNames} from "../lib/utils/classNames";
-import {useRouter} from "next/router";
+import {classNames} from "../lib/classNames";
+import useSWR from "swr"
+import {useAppContext} from "../lib/state";
 
 const frequency = [
     {id: 0, name: 'Never'},
@@ -14,10 +14,6 @@ const frequency = [
     {id: 4, name: 'Monthly'},
     {id: 5, name: 'Quarterly'},
     {id: 6, name: 'Yearly'}
-]
-const attachments = [
-    {name: 'resume_front_end_developer.pdf', href: '#'},
-    {name: 'coverletter_front_end_developer.pdf', href: '#'},
 ]
 
 // export async function getServerSideProps(context) {
@@ -39,45 +35,82 @@ const attachments = [
 //         },
 //     };
 // }
+const fetcher = (query) => fetch(process.env.NEXT_PUBLIC_HASURA_ADMIN_URL, {
+    method: 'POST',
+    headers: {
+        Authorization: `Bearer ${query.token}`,
+        'Content-type': 'application/json',
+    },
+    body: JSON.stringify({
+        query: query.operationsDoc,
+        variables: query.variables,
+        operationName: query.operationName,
+    })
+}).then(result => result.json());
+const operationsDoc = `
+  query getProjects($userId: String!) {
+    projects(where: {user_id: {_eq: $userId}}) {
+      data
+      description
+      id
+      name
+      type
+    }
+  }
+`;
 
-Finance.componentWillUnmount = () => {
-    state.expenses = expenses
-    state.incomes = incomes
-    //console.log("UNMOUNT")
-}
 export default function Finance() {
-    const router = useRouter()
     const state = useAppContext()
-
-    const [expenses, setExpenses] = useState(state.expenses);
-    const [incomes, setIncomes] = useState(state.incomes);
+    console.log(state.token, state.issuer)
+    const query = {
+        operationsDoc,
+        operationName: 'getProjects',
+        variables: {"userId": state.issuer},
+        token: state.token
+    }
+    const {data, error} = useSWR(
+        query,
+        fetcher
+    );
+    if (!data || error) {
+        return (<div>Error</div>)
+    }
+    const [expenses, setExpenses] = useState([]);
+    const [incomes, setIncomes] = useState([]);
+    try {
+        console.log("DA", data.data.projects, error,)
+        // setExpenses(data.data.projects[0].data.expenses)
+        // setIncomes(data.data.projects[0].data.expenses)
+    } catch (err) {
+        console.log(err)
+    }
 
     const [totalExpenses, setTotalExpenses] = useState(0);
     const [totalIncome, setTotalIncomes] = useState(0);
 
 
-    //console.log(expenses, incomes)
-    useEffect(async () => {
-        // if (!state.token || !state.issuer)
-        //     await router.push('/login')
-
-        if (!state.projects) {
-            const data = await getProjects(state.token, state.issuer);
-            if (data?.projects) {
-                state.projects = data.projects
-
-                //console.log("DATA RET", state.projects)
-                const {incomes, expenses} = data.projects[0].data
-                setIncomes(incomes)
-                setExpenses(expenses)
-            }
-        } else if (!incomes || !expenses) {
-            //console.log("DATA RET 2", state.projects)
-            const {incomes, expenses} = state.projects[0].data
-            setIncomes(incomes)
-            setExpenses(expenses)
-        }
-    }, [])
+    // //console.log(expenses, incomes)
+    // useEffect(async () => {
+    //     // if (!state.token || !state.issuer)
+    //     //     await router.push('/login')
+    //
+    //     if (!state.projects) {
+    //         const data = await getProjects(state.token, state.issuer);
+    //         if (data?.projects) {
+    //             state.projects = data.projects
+    //
+    //             //console.log("DATA RET", state.projects)
+    //             const {incomes, expenses} = data.projects[0].data
+    //             setIncomes(incomes)
+    //             setExpenses(expenses)
+    //         }
+    //     } else if (!incomes || !expenses) {
+    //         //console.log("DATA RET 2", state.projects)
+    //         const {incomes, expenses} = state.projects[0].data
+    //         setIncomes(incomes)
+    //         setExpenses(expenses)
+    //     }
+    // }, [])
 
 
     async function saveFinance() {
@@ -163,7 +196,8 @@ export default function Finance() {
 
     return (
         <div className="mt-8 min-h-max mx-auto grid grid-cols-1 gap-6 sm:px-6 lg:grid-flow-col-dense lg:grid-cols-3">
-            <div className="space-y-6 lg:col-start-1 lg:col-span-1">
+
+        <div className="space-y-6 lg:col-start-1 lg:col-span-1">
                 <section aria-labelledby="applicant-information-title">
                     <div className="bg-white shadow sm:rounded-lg">
                         <div className="px-4 py-5 sm:px-6">

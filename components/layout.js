@@ -1,14 +1,27 @@
 import {useRouter} from 'next/router';
 import {Fragment, useEffect, useState} from 'react';
-import {magic} from '../../lib/magic-client';
+import {magic} from '../lib/magic-client';
 import {Disclosure, Menu, Transition} from '@headlessui/react';
 import {MenuIcon, XIcon} from '@heroicons/react/outline';
-import Loading from '../loading/loading';
+import Loading from './loading';
 import Link from 'next/link';
-import {classNames} from '../../lib/utils/classNames';
-import {useAppContext} from "../../lib/utils/state";
-import {getTokenCookie} from "../../lib/cookies";
-import GeoLocation from "../../hooks/geoLocation";
+import {classNames} from '../lib/classNames';
+import {useAppContext} from "../lib/state";
+import {getTokenCookie} from "../lib/cookies";
+import GeoLocation from "../hooks/geoLocation";
+
+const fetcher = (query) => fetch(process.env.NEXT_PUBLIC_HASURA_ADMIN_URL, {
+    method: 'POST',
+    headers: {
+        Authorization: `Bearer ${query.token}`,
+        'Content-type': 'application/json',
+    },
+    body: JSON.stringify({
+        query: query.operationsDoc,
+        variables: query.variables,
+        operationName: query.operationName,
+    })
+}).then(result => result.json());
 
 export default function Layout({children, ...pageProps}) {
     const router = useRouter();
