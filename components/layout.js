@@ -6,49 +6,42 @@ import {MenuIcon, XIcon} from '@heroicons/react/outline';
 import Loading from './loading';
 import Link from 'next/link';
 import {classNames} from '../lib/classNames';
-import {useAppContext} from "../lib/state";
-import {getTokenCookie} from "../lib/cookies";
-import GeoLocation from "../hooks/geoLocation";
 
-const fetcher = (query) => fetch(process.env.NEXT_PUBLIC_HASURA_ADMIN_URL, {
-    method: 'POST',
-    headers: {
-        Authorization: `Bearer ${query.token}`,
-        'Content-type': 'application/json',
-    },
-    body: JSON.stringify({
-        query: query.operationsDoc,
-        variables: query.variables,
-        operationName: query.operationName,
-    })
-}).then(result => result.json());
+const navigation = [
+    {name: 'Dashboard', href: '/', current: true},
+    {name: 'Finance', href: '/finance', current: false},
+    {name: 'Inventory', href: '/inventory', current: false},
+    {name: 'Job Scheduling', href: '/calendar', current: false},
+    {name: 'Pricing', href: '/pricing', current: false},
+];
 
 export default function Layout({children, ...pageProps}) {
     const router = useRouter();
-    const state = useAppContext()
-    const [username, setUsername] = useState('');
-    const [didToken, setDidToken] = useState('');
 
+
+    const [nav, setNav] = useState(navigation)
+    const [username, setUsername] = useState('');
+    // const [didToken, setDidToken] = useState('');
     const [isLoading, setIsLoading] = useState(true);
-    const {latLong, getGeoLocation, locationErrorMsg, findingLocation} =
-        GeoLocation();
-    //console.log("APP", state)
+    // const {latLong, getGeoLocation, locationErrorMsg, findingLocation} = GeoLocation();
+
     useEffect(async () => {
+        const handleComplete = () => {
+
+            setIsLoading(false);
+        };
+
+        router.events.on('routeChangeComplete', handleComplete);
+        router.events.on('routeChangeError', handleComplete);
+
         try {
             setIsLoading(true);
-            const {email, issuer} = await magic.user.getMetadata();
-            const didToken = await magic.user.getIdToken();
-            if (email && didToken) {
-                setUsername(email);
-                setDidToken(didToken);
-                const token = await getTokenCookie()
-                state.token = token;
-                state.didToken = didToken;
-                state.email = email;
-                state.issuer = issuer;
-                getGeoLocation();
-                state.latLong = latLong;
 
+            const {email, issuer} = await magic.user.getMetadata();
+            // const didToken = await magic.user.getIdToken();
+            if (email) {
+                setUsername(email);
+                // setDidToken(didToken);
             } else {
                 await signOut()
             }
@@ -56,15 +49,8 @@ export default function Layout({children, ...pageProps}) {
             console.error('Error retrieving email', error);
             await signOut()
         }
-        setIsLoading(false);
-    }, []);
 
-    useEffect(() => {
-        const handleComplete = () => {
-            setIsLoading(false);
-        };
-        router.events.on('routeChangeComplete', handleComplete);
-        router.events.on('routeChangeError', handleComplete);
+        setIsLoading(false);
 
         return () => {
             router.events.off('routeChangeComplete', handleComplete);
@@ -76,6 +62,7 @@ export default function Layout({children, ...pageProps}) {
         e?.preventDefault();
 
         try {
+            const didToken = await magic.user.getIdToken();
             const response = await fetch('/api/logout', {
                 method: 'POST',
                 headers: {
@@ -83,21 +70,25 @@ export default function Layout({children, ...pageProps}) {
                     'Content-Type': 'application/json',
                 },
             });
-
-            const res = await response.json();
+            await response.json();
         } catch (error) {
             console.error('Error logging out', error);
             router.push('/login');
         }
     };
 
-    const navigation = [
-        {name: 'Finance', href: '/finance', current: false},
-        {name: 'Calendar', href: '/calendar', current: false},
-        {name: 'Pricing', href: '/pricing', current: false},
-        {name: 'About', href: '/about', current: false},
-    ];
     const userNavigation = [{name: 'Sign out', func: signOut}];
+
+    function navSelected(item) {
+        for (let i = 0; i < nav.length; i++) {
+            console.log(nav[i])
+            if (nav[i].name == item.name)
+                nav[i].current = true;
+            else
+                nav[i].current = false;
+        }
+        setNav([...nav]);
+    }
 
     return (
         <div className="flex flex-grow flex-col min-h-screen">
@@ -114,19 +105,20 @@ export default function Layout({children, ...pageProps}) {
                                     </div>
                                     <div className="hidden md:block">
                                         <div className="ml-10 flex items-baseline space-x-4">
-                                            {navigation.map((item) => (
+                                            {nav.map((item) => (
                                                 <Link
                                                     href={item.href ? item.href : '/'}
                                                     key={item.name}
+
                                                 >
-                                                    <a
-                                                        className={classNames(
-                                                            item.current
-                                                                ? 'bg-gray-900 text-white'
-                                                                : 'text-gray-300 hover:bg-gray-700 hover:text-white disabled',
-                                                            'px-3 py-2 rounded-md text-sm font-medium'
-                                                        )}
-                                                        aria-current={item.current ? 'page' : undefined}
+                                                    <a onClick={(e) => navSelected(item)}
+                                                       className={classNames(
+                                                           item.current
+                                                               ? 'bg-gray-900 text-white'
+                                                               : 'text-gray-300 hover:bg-gray-700 hover:text-white disabled',
+                                                           'px-3 py-2 rounded-md text-sm font-medium'
+                                                       )}
+                                                       aria-current={item.current ? 'page' : undefined}
                                                     >
                                                         {item.name}
                                                     </a>
@@ -238,12 +230,14 @@ export default function Layout({children, ...pageProps}) {
                                 <div className="mt-3 px-2 space-y-1">
                                     {userNavigation.map((item) => (
                                         <Disclosure.Button key={item.name} as={Fragment}>
-                                            <a
-                                                onClick={item.func}
-                                                className="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700"
-                                            >
-                                                {item.name}
-                                            </a>
+                                            <Link>
+                                                <a
+                                                    onClick={item.func}
+                                                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700"
+                                                >
+                                                    {item.name}
+                                                </a>
+                                            </Link>
                                         </Disclosure.Button>
                                     ))}
                                 </div>

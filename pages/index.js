@@ -1,126 +1,317 @@
-export default function Home({projects, ...pageProps}) {
+import {ScaleIcon,} from '@heroicons/react/outline'
+import {CashIcon, CheckCircleIcon, ChevronRightIcon, OfficeBuildingIcon,} from '@heroicons/react/solid'
+import {classNames} from "../lib/classNames";
+import Head from "next/Head";
 
-    // const { latLong, getGeoLocation, locationErrorMsg, findingLocation } =
-    //   GeoLocation();
+const cards = [
+    {name: 'Account balance', href: '#', icon: ScaleIcon, amount: '$30,659.45'},
+    {name: 'Account balance', href: '#', icon: ScaleIcon, amount: '$30,659.45'},
+    {name: 'Account balance', href: '#', icon: ScaleIcon, amount: '$30,659.45'},
+]
 
-    // useEffect(() => {
-    //   getGeoLocation();
-    // }, []);
+const transactions = [
+    {
+        id: 1,
+        name: 'Payment to Molly Sanders',
+        href: '#',
+        amount: '$20,000',
+        currency: 'USD',
+        status: 'success',
+        date: 'July 11, 2020',
+        datetime: '2020-07-11',
+    }, {
+        id: 1,
+        name: 'Payment to Molly Sanders',
+        href: '#',
+        amount: '$20,000',
+        currency: 'USD',
+        status: 'success',
+        date: 'July 11, 2020',
+        datetime: '2020-07-11',
+    }, {
+        id: 1,
+        name: 'Payment to Molly Sanders',
+        href: '#',
+        amount: '$20,000',
+        currency: 'USD',
+        status: 'success',
+        date: 'July 11, 2020',
+        datetime: '2020-07-11',
+    }, {
+        id: 1,
+        name: 'Payment to Molly Sanders',
+        href: '#',
+        amount: '$20,000',
+        currency: 'USD',
+        status: 'success',
+        date: 'July 11, 2020',
+        datetime: '2020-07-11',
+    },
+]
+
+const statusStyles = {
+    success: 'bg-green-100 text-green-800',
+    processing: 'bg-yellow-100 text-yellow-800',
+    failed: 'bg-gray-100 text-gray-800',
+}
+
+export default function Example() {
+
     return (
-        <>
-            <div className="bg-indigo-700">
-                <div className="max-w-2xl mx-auto text-center py-16 px-4 sm:py-20 sm:px-6 lg:px-8">
-                    <h2 className="text-3xl font-extrabold text-white sm:text-4xl">
-                        <span className="block">Boost your productivity.</span>
-                        <span className="block">Start using Workflow today.</span>
-                    </h2>
-                    <p className="mt-4 text-lg leading-6 text-indigo-200">
-                        Ac euismod vel sit maecenas id pellentesque eu sed consectetur. Malesuada adipiscing sagittis
-                        vel nulla nec.
-                    </p>
-                    <a
-                        href="#"
-                        className="mt-8 w-full inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-indigo-600 bg-white hover:bg-indigo-50 sm:w-auto"
-                    >
-                        Sign up for free
-                    </a>
-                </div>
-            </div>
-            <div className="relative py-16 bg-white">
-                <div className="hidden absolute top-0 inset-x-0 h-1/2 bg-gray-50 lg:block" aria-hidden="true"/>
-                <div className="max-w-7xl mx-auto bg-indigo-600 lg:bg-transparent lg:px-8">
-                    <div className="lg:grid lg:grid-cols-12">
-                        <div className="relative z-10 lg:col-start-1 lg:row-start-1 lg:col-span-4 lg:py-16 lg:bg-transparent">
-                            <div className="absolute inset-x-0 h-1/2 bg-gray-50 lg:hidden" aria-hidden="true"/>
-                            <div className="max-w-md mx-auto px-4 sm:max-w-3xl sm:px-6 lg:max-w-none lg:p-0">
-                                <div className="aspect-w-10 aspect-h-6 sm:aspect-w-2 sm:aspect-h-1 lg:aspect-w-1">
-                                    <img
-                                        className="object-cover object-center rounded-3xl shadow-2xl"
-                                        src="https://images.unsplash.com/photo-1507207611509-ec012433ff52?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=934&q=80"
-                                        alt=""
-                                    />
+        <div className="min-h-full">
+            <Head>
+                <title>XDNSX Home</title>
+            </Head>
+            <div className="flex flex-col flex-1">
+                <main className="flex-1 pb-8">
+                    {/* Page header */}
+                    <div className="bg-white shadow ">
+                        <div className="px-4 sm:px-6 lg:max-w-6xl lg:mx-auto lg:px-8 ">
+                            <div className="py-6 md:flex md:items-center md:justify-between lg:border-t lg:border-gray-200">
+                                <div className="flex-1 min-w-0">
+                                    {/* Profile */}
+                                    <div className="flex items-center">
+                                        <div className="h-16 w-16 rounded-full sm:block">
+                                            <svg
+                                                className="h-full w-full text-gray-300"
+                                                fill="currentColor"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z"/>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <div className="flex items-center">
+                                                <img
+                                                    className="h-16 w-16 rounded-full sm:hidden"
+                                                    src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.6&w=256&h=256&q=80"
+                                                    alt=""
+                                                />
+                                                <h1 className="ml-3 text-2xl font-bold leading-7 text-gray-900 sm:leading-9 sm:truncate">
+                                                    Good morning!
+                                                </h1>
+                                            </div>
+                                            <dl className="mt-6 flex flex-col sm:ml-3 sm:mt-1 sm:flex-row sm:flex-wrap">
+                                                <dt className="sr-only">Company</dt>
+                                                <dd className="flex items-center text-sm text-gray-500 font-medium capitalize sm:mr-6">
+                                                    <OfficeBuildingIcon
+                                                        className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
+                                                        aria-hidden="true"
+                                                    />
+                                                    Duke street studio
+                                                </dd>
+                                                <dt className="sr-only">Account status</dt>
+                                                <dd className="mt-3 flex items-center text-sm text-gray-500 font-medium sm:mr-6 sm:mt-0 capitalize">
+                                                    <CheckCircleIcon
+                                                        className="flex-shrink-0 mr-1.5 h-5 w-5 text-green-400"
+                                                        aria-hidden="true"
+                                                    />
+                                                    Verified account
+                                                </dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="mt-6 flex space-x-3 md:mt-0 md:ml-4">
+                                    <button
+                                        type="button"
+                                        className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500"
+                                    >
+                                        Add money
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500"
+                                    >
+                                        Send money
+                                    </button>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <div className="relative bg-indigo-600 lg:col-start-3 lg:row-start-1 lg:col-span-10 lg:rounded-3xl lg:grid lg:grid-cols-10 lg:items-center">
-                            <div className="hidden absolute inset-0 overflow-hidden rounded-3xl lg:block"
-                                 aria-hidden="true">
-                                <svg
-                                    className="absolute bottom-full left-full transform translate-y-1/3 -translate-x-2/3 xl:bottom-auto xl:top-0 xl:translate-y-0"
-                                    width={404}
-                                    height={384}
-                                    fill="none"
-                                    viewBox="0 0 404 384"
-                                    aria-hidden="true"
-                                >
-                                    <defs>
-                                        <pattern
-                                            id="64e643ad-2176-4f86-b3d7-f2c5da3b6a6d"
-                                            x={0}
-                                            y={0}
-                                            width={20}
-                                            height={20}
-                                            patternUnits="userSpaceOnUse"
-                                        >
-                                            <rect x={0}
-                                                  y={0}
-                                                  width={4}
-                                                  height={4}
-                                                  className="text-indigo-500"
-                                                  fill="currentColor"/>
-                                        </pattern>
-                                    </defs>
-                                    <rect width={404} height={384} fill="url(#64e643ad-2176-4f86-b3d7-f2c5da3b6a6d)"/>
-                                </svg>
-                                <svg
-                                    className="absolute top-full transform -translate-y-1/3 -translate-x-1/3 xl:-translate-y-1/2"
-                                    width={404}
-                                    height={384}
-                                    fill="none"
-                                    viewBox="0 0 404 384"
-                                    aria-hidden="true"
-                                >
-                                    <defs>
-                                        <pattern
-                                            id="64e643ad-2176-4f86-b3d7-f2c5da3b6a6d"
-                                            x={0}
-                                            y={0}
-                                            width={20}
-                                            height={20}
-                                            patternUnits="userSpaceOnUse"
-                                        >
-                                            <rect x={0}
-                                                  y={0}
-                                                  width={4}
-                                                  height={4}
-                                                  className="text-indigo-500"
-                                                  fill="currentColor"/>
-                                        </pattern>
-                                    </defs>
-                                    <rect width={404} height={384} fill="url(#64e643ad-2176-4f86-b3d7-f2c5da3b6a6d)"/>
-                                </svg>
+                    <div className="mt-8">
+                        <div className=" mx-auto px-4 sm:px-6 lg:px-8">
+                            <h2 className="text-lg leading-6 font-medium text-gray-900">Overview</h2>
+                            <div className="mt-2 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                                {/* Card */}
+                                {cards.map((card) => (
+                                    <div key={card.name} className="bg-white overflow-hidden shadow rounded-lg">
+                                        <div className="p-5">
+                                            <div className="flex items-center">
+                                                <div className="flex-shrink-0">
+                                                    <card.icon className="h-6 w-6 text-gray-400"
+                                                               aria-hidden="true"/>
+                                                </div>
+                                                <div className="ml-5 w-0 flex-1">
+                                                    <dl>
+                                                        <dt className="text-sm font-medium text-gray-500 truncate">{card.name}</dt>
+                                                        <dd>
+                                                            <div className="text-lg font-medium text-gray-900">{card.amount}</div>
+                                                        </dd>
+                                                    </dl>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="bg-gray-50 px-5 py-3">
+                                            <div className="text-sm">
+                                                <a href={card.href}
+                                                   className="font-medium text-cyan-700 hover:text-cyan-900">
+                                                    View all
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
-                            <div className="relative max-w-md mx-auto py-12 px-4 space-y-6 sm:max-w-3xl sm:py-16 sm:px-6 lg:max-w-none lg:p-0 lg:col-start-4 lg:col-span-6">
-                                <h2 className="text-3xl font-extrabold text-white" id="join-heading">
-                                    Join our team
-                                </h2>
-                                <p className="text-lg text-white">
-                                    Varius facilisi mauris sed sit. Non sed et duis dui leo, vulputate id malesuada non.
-                                    Cras aliquet purus
-                                    dui laoreet diam sed lacus, fames.
-                                </p>
-                                <a
-                                    className="block w-full py-3 px-5 text-center bg-white border border-transparent rounded-md shadow-md text-base font-medium text-indigo-700 hover:bg-gray-50 sm:inline-block sm:w-auto"
-                                    href="#"
+                        </div>
+
+                        <h2 className="mx-auto mt-8 px-4 text-lg leading-6 font-medium text-gray-900 sm:px-6 lg:px-8">
+                            Recent activity
+                        </h2>
+
+                        {/* Activity list (smallest breakpoint only) */}
+                        <div className="shadow sm:hidden">
+                            <ul role="list"
+                                className="mt-2 divide-y divide-gray-200 overflow-hidden shadow sm:hidden">
+                                {transactions.map((transaction) => (
+                                    <li key={transaction.id}>
+                                        <a href={transaction.href}
+                                           className="block px-4 py-4 bg-white hover:bg-gray-50">
+                        <span className="flex items-center space-x-4">
+                          <span className="flex-1 flex space-x-2 truncate">
+                            <CashIcon className="flex-shrink-0 h-5 w-5 text-gray-400" aria-hidden="true"/>
+                            <span className="flex flex-col text-gray-500 text-sm truncate">
+                              <span className="truncate">{transaction.name}</span>
+                              <span>
+                                <span className="text-gray-900 font-medium">{transaction.amount}</span>{' '}
+                                  {transaction.currency}
+                              </span>
+                              <time dateTime={transaction.datetime}>{transaction.date}</time>
+                            </span>
+                          </span>
+                          <ChevronRightIcon className="flex-shrink-0 h-5 w-5 text-gray-400" aria-hidden="true"/>
+                        </span>
+                                        </a>
+                                    </li>
+                                ))}
+                            </ul>
+
+                            <nav
+                                className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200"
+                                aria-label="Pagination"
+                            >
+                                <div className="flex-1 flex justify-between">
+                                    <a
+                                        //href="#"
+                                        className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:text-gray-500"
+                                    >
+                                        Previous
+                                    </a>
+                                    <a
+                                        //href="#"
+                                        className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:text-gray-500"
+                                    >
+                                        Next
+                                    </a>
+                                </div>
+                            </nav>
+                        </div>
+
+                        {/* Activity table (small breakpoint and up) */}
+                        <div className="hidden sm:block">
+                            <div className=" mx-auto px-4 sm:px-6 lg:px-8">
+                                <div className="flex flex-col mt-2">
+                                    <div className="align-middle min-w-full overflow-x-auto shadow overflow-hidden sm:rounded-lg">
+                                        <table className="min-w-full divide-y divide-gray-200">
+                                            <thead>
+                                            <tr>
+                                                <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    Transaction
+                                                </th>
+                                                <th className="px-6 py-3 bg-gray-50 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    Amount
+                                                </th>
+                                                <th className="hidden px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:block">
+                                                    Status
+                                                </th>
+                                                <th className="px-6 py-3 bg-gray-50 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    Date
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                            <tbody className="bg-white divide-y divide-gray-200">
+                                            {transactions.map((transaction) => (
+                                                <tr key={transaction.id} className="bg-white">
+                                                    <td className="max-w-0 w-full px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                        <div className="flex">
+                                                            <a href={transaction.href}
+                                                               className="group inline-flex space-x-2 truncate text-sm">
+                                                                <CashIcon
+                                                                    className="flex-shrink-0 h-5 w-5 text-gray-400 group-hover:text-gray-500"
+                                                                    aria-hidden="true"
+                                                                />
+                                                                <p className="text-gray-500 truncate group-hover:text-gray-900">
+                                                                    {transaction.name}
+                                                                </p>
+                                                            </a>
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-6 py-4 text-right whitespace-nowrap text-sm text-gray-500">
+                                                        <span className="text-gray-900 font-medium">{transaction.amount} </span>
+                                                        {transaction.currency}
+                                                    </td>
+                                                    <td className="hidden px-6 py-4 whitespace-nowrap text-sm text-gray-500 md:block">
+                                <span
+                                    className={classNames(
+                                        statusStyles[transaction.status],
+                                        'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize'
+                                    )}
                                 >
-                                    Explore open positions
-                                </a>
+                                  {transaction.status}
+                                </span>
+                                                    </td>
+                                                    <td className="px-6 py-4 text-right whitespace-nowrap text-sm text-gray-500">
+                                                        <time dateTime={transaction.datetime}>{transaction.date}</time>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                            </tbody>
+                                        </table>
+                                        {/* Pagination */}
+                                        <nav
+                                            className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6"
+                                            aria-label="Pagination"
+                                        >
+                                            <div className="hidden sm:block">
+                                                <p className="text-sm text-gray-700">
+                                                    Showing <span className="font-medium">1</span> to <span
+                                                    className="font-medium">10</span> of{' '}
+                                                    <span className="font-medium">20</span> results
+                                                </p>
+                                            </div>
+                                            <div className="flex-1 flex justify-between sm:justify-end">
+                                                <a
+                                                    //href="#"
+                                                    className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                                                >
+                                                    Previous
+                                                </a>
+                                                <a
+                                                    //href="#"
+                                                    className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                                                >
+                                                    Next
+                                                </a>
+                                            </div>
+                                        </nav>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </main>
             </div>
-        </>
-    );
+        </div>
+    )
 }

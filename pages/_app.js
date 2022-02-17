@@ -5,26 +5,33 @@ import 'tailwindcss/tailwind.css';
 import '../styles/globals.css';
 
 import Layout from '../components/layout';
-import {AppWrapper} from "../lib/state";
+import RedirectUser from "../lib/redirectUser";
 
-const Noop = ({children}) => <>{children}</>;
+
+export async function getServerSideProps(context) {
+    const {userId, token} = await RedirectUser(context);
+
+    return {
+        props: {
+            token,
+            userId
+        },
+    };
+}
+
 export default function MyApp({Component, pageProps}) {
 
     const router = useRouter();
     const [isLoginPage, setIsLoginPage] = useState(false);
 
     useEffect(() => {
-        //console.log(router.asPath);
-        if (router.asPath == '/login') setIsLoginPage(true);
+        if (router.asPath === '/login') setIsLoginPage(true);
         else setIsLoginPage(false);
     }, [router]);
-    const AppWrapper = Component.provider || Noop;
+
     return (isLoginPage ? <Component/> :
-            <AppWrapper>
-                <Layout>
-                    <Component {...pageProps} />
-                    {/*<Footer/>*/}
-                </Layout>
-            </AppWrapper>
+            <Layout>
+                <Component {...pageProps} />
+            </Layout>
     );
 }
