@@ -1,7 +1,7 @@
 import {ScaleIcon,} from '@heroicons/react/outline'
 import {CashIcon, CheckCircleIcon, ChevronRightIcon, OfficeBuildingIcon,} from '@heroicons/react/solid'
 import {classNames} from "../lib/classNames";
-import Head from "next/Head";
+import Head from "next/head";
 
 const cards = [
     {name: 'Account balance', href: '#', icon: ScaleIcon, amount: '$30,659.45'},

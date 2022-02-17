@@ -5,7 +5,7 @@ import {classNames} from "../lib/classNames";
 import RedirectUser from "../lib/redirectUser";
 import FinanceList from "../components/financeList";
 import {useRouter} from 'next/router';
-import Head from "next/Head";
+import Head from "next/head";
 import PieChart from "../components/pieChart";
 
 const frequency = [
