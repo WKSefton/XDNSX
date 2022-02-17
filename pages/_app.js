@@ -6,6 +6,7 @@ import '../styles/globals.css';
 
 import Layout from '../components/layout';
 import RedirectUser from "../lib/redirectUser";
+import NextNProgress from "nextjs-progressbar";
 
 
 export async function getServerSideProps(context) {
@@ -29,9 +30,13 @@ export default function MyApp({Component, pageProps}) {
         else setIsLoginPage(false);
     }, [router]);
 
-    return (isLoginPage ? <Component/> :
-            <Layout>
-                <Component {...pageProps} />
-            </Layout>
+    return (
+        <>
+            <NextNProgress height={5} options={{parent: "#layout"}}/>
+            {isLoginPage ? <Component/> :
+                <Layout>
+                    <Component {...pageProps} />
+                </Layout>}
+        </>
     );
 }

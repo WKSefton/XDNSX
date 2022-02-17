@@ -3,7 +3,6 @@ import {Fragment, useEffect, useState} from 'react';
 import {magic} from '../lib/magic-client';
 import {Disclosure, Menu, Transition} from '@headlessui/react';
 import {MenuIcon, XIcon} from '@heroicons/react/outline';
-import Loading from './loading';
 import Link from 'next/link';
 import {classNames} from '../lib/classNames';
 
@@ -22,21 +21,11 @@ export default function Layout({children, ...pageProps}) {
     const [nav, setNav] = useState(navigation)
     const [username, setUsername] = useState('');
     // const [didToken, setDidToken] = useState('');
-    const [isLoading, setIsLoading] = useState(true);
+
     // const {latLong, getGeoLocation, locationErrorMsg, findingLocation} = GeoLocation();
 
     useEffect(async () => {
-        const handleComplete = () => {
-
-            setIsLoading(false);
-        };
-
-        router.events.on('routeChangeComplete', handleComplete);
-        router.events.on('routeChangeError', handleComplete);
-
         try {
-            setIsLoading(true);
-
             const {email, issuer} = await magic.user.getMetadata();
             // const didToken = await magic.user.getIdToken();
             if (email) {
@@ -49,13 +38,6 @@ export default function Layout({children, ...pageProps}) {
             console.error('Error retrieving email', error);
             await signOut()
         }
-
-        setIsLoading(false);
-
-        return () => {
-            router.events.off('routeChangeComplete', handleComplete);
-            router.events.off('routeChangeError', handleComplete);
-        };
     }, [router]);
 
     const signOut = async (e) => {
@@ -108,9 +90,7 @@ export default function Layout({children, ...pageProps}) {
                                             {nav.map((item) => (
                                                 <Link
                                                     href={item.href ? item.href : '/'}
-                                                    key={item.name}
-
-                                                >
+                                                    key={item.name}>
                                                     <a onClick={(e) => navSelected(item)}
                                                        className={classNames(
                                                            item.current
@@ -197,12 +177,9 @@ export default function Layout({children, ...pageProps}) {
 
                         <Disclosure.Panel className="md:hidden">
                             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                                {navigation.map((item) => (
-                                    <Link
-                                        key={item.name}
-                                        href={item.href ? item.href : '/'}
-                                        passHref
-                                    >
+                                {nav.map((item) => (
+                                    <Link key={item.name}
+                                          href={item.href ? item.href : '/'} passHref>
                                         <Disclosure.Button as={Fragment}>
                                             <a
                                                 className={classNames(
@@ -210,8 +187,7 @@ export default function Layout({children, ...pageProps}) {
                                                         ? 'bg-gray-900 text-white'
                                                         : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                                                     'block px-3 py-2 rounded-md text-base font-medium'
-                                                )}
-                                            >
+                                                )}>
                                                 {item.name}
                                             </a>
                                         </Disclosure.Button>
@@ -230,7 +206,7 @@ export default function Layout({children, ...pageProps}) {
                                 <div className="mt-3 px-2 space-y-1">
                                     {userNavigation.map((item) => (
                                         <Disclosure.Button key={item.name} as={Fragment}>
-                                            <Link>
+                                            <Link href="/">
                                                 <a
                                                     onClick={item.func}
                                                     className="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700"
@@ -247,10 +223,8 @@ export default function Layout({children, ...pageProps}) {
                 )}
             </Disclosure>
 
-            <main>
+            <main id="layout">
                 <div className="mt-9 mx-auto sm:px-6 lg:px-8">
-                    {isLoading ? <Loading/> : null}
-
                     {children}
                 </div>
             </main>
