@@ -55,8 +55,7 @@ const statusStyles = {
     failed: 'bg-gray-100 text-gray-800',
 }
 
-export default function Example() {
-
+export default function Index() {
     return (
         <div className="min-h-full">
             <Head>
@@ -82,11 +81,6 @@ export default function Example() {
                                         </div>
                                         <div>
                                             <div className="flex items-center">
-                                                <img
-                                                    className="h-16 w-16 rounded-full sm:hidden"
-                                                    src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.6&w=256&h=256&q=80"
-                                                    alt=""
-                                                />
                                                 <h1 className="ml-3 text-2xl font-bold leading-7 text-gray-900 sm:leading-9 sm:truncate">
                                                     Good morning!
                                                 </h1>
@@ -135,8 +129,8 @@ export default function Example() {
                             <h2 className="text-lg leading-6 font-medium text-gray-900">Overview</h2>
                             <div className="mt-2 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
                                 {/* Card */}
-                                {cards.map((card) => (
-                                    <div key={card.name} className="bg-white overflow-hidden shadow rounded-lg">
+                                {cards.map((card, index) => (
+                                    <div key={index} className="bg-white overflow-hidden shadow rounded-lg">
                                         <div className="p-5">
                                             <div className="flex items-center">
                                                 <div className="flex-shrink-0">
@@ -174,8 +168,8 @@ export default function Example() {
                         <div className="shadow sm:hidden">
                             <ul role="list"
                                 className="mt-2 divide-y divide-gray-200 overflow-hidden shadow sm:hidden">
-                                {transactions.map((transaction) => (
-                                    <li key={transaction.id}>
+                                {transactions.map((transaction, index) => (
+                                    <li key={transaction.id + index}>
                                         <a href={transaction.href}
                                            className="block px-4 py-4 bg-white hover:bg-gray-50">
                         <span className="flex items-center space-x-4">
@@ -241,8 +235,8 @@ export default function Example() {
                                             </tr>
                                             </thead>
                                             <tbody className="bg-white divide-y divide-gray-200">
-                                            {transactions.map((transaction) => (
-                                                <tr key={transaction.id} className="bg-white">
+                                            {transactions.map((transaction, index) => (
+                                                <tr key={transaction.id + index} className="bg-white">
                                                     <td className="max-w-0 w-full px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                                         <div className="flex">
                                                             <a href={transaction.href}

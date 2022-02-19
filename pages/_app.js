@@ -5,36 +5,25 @@ import 'tailwindcss/tailwind.css';
 import '../styles/globals.css';
 
 import Layout from '../components/layout';
-import RedirectUser from "../lib/redirectUser";
+
 import NextNProgress from "nextjs-progressbar";
 
-
-export async function getServerSideProps(context) {
-    const {userId, token} = await RedirectUser(context);
-
-    return {
-        props: {
-            token,
-            userId
-        },
-    };
-}
 
 export default function MyApp({Component, pageProps}) {
 
     const router = useRouter();
-    const [isLoginPage, setIsLoginPage] = useState(false);
+    const [isLoginPage, setIsLoginPage] = useState(true);
 
     useEffect(() => {
-        if (router.asPath === '/login') setIsLoginPage(true);
+        if (router.asPath == '/login') setIsLoginPage(true);
         else setIsLoginPage(false);
     }, [router]);
 
     return (
         <>
             <NextNProgress height={5} options={{parent: "#layout"}}/>
-            {isLoginPage ? <Component/> :
-                <Layout>
+            {isLoginPage ? <Component {...pageProps}/> :
+                <Layout {...pageProps}>
                     <Component {...pageProps} />
                 </Layout>}
         </>

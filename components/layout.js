@@ -16,7 +16,7 @@ const navigation = [
 
 export default function Layout({children, ...pageProps}) {
     const router = useRouter();
-
+    console.log("LAYOUT", pageProps)
 
     const [nav, setNav] = useState(navigation)
     const [username, setUsername] = useState('');

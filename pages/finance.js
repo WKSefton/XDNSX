@@ -4,7 +4,6 @@ import {Tab} from '@headlessui/react'
 import {classNames} from "../lib/classNames";
 import RedirectUser from "../lib/redirectUser";
 import FinanceList from "../components/financeList";
-import {useRouter} from 'next/router';
 import Head from "next/head";
 import PieChart from "../components/pieChart";
 
@@ -24,11 +23,21 @@ const tabSeed = [
     {name: 'Finance Summary', href: '#', current: false}
 ]
 
+export async function getServerSideProps(context) {
+    const {userId, token} = await RedirectUser(context);
+
+    const {projects} = await getProjects(token, userId);
+
+    return {
+        props: {
+            projects,
+            token,
+            userId
+        },
+    };
+}
+
 export default function Finance({projects, token, userId}) {
-    console.log(projects)
-    const router = useRouter();
-    if (!token || !userId)
-        router.push('/api/logout')
 
     const [expenses, setExpenses] = useState(projects[0].data.expenses);
     const [incomes, setIncomes] = useState(projects[0].data.incomes);
@@ -58,7 +67,7 @@ export default function Finance({projects, token, userId}) {
     useEffect(async () => {
         const projectToUpdate = projects[0]
         projectToUpdate.data = {expenses, incomes}
-        const update = await updateProject(token, projectToUpdate)
+        await updateProject(token, projectToUpdate)
     }, [expenses, incomes])
 
     return (
@@ -99,21 +108,22 @@ export default function Finance({projects, token, userId}) {
                     </Tab.List>
                 </div>
 
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    {/* We've used 3xl here, but feel free to try other max-widths based on your needs */}
-                    <div className="flex justify-between sm:justify-center max-w-3xl mx-auto">
-                        <PieChart name="fdas"
+                <div className="grid grid-cols-2 max-w-7xl max-h-fit mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="col-span-1 mx-auto px-4 py-6 sm:px-6 lg:px-8">
+                        <PieChart name="expensesPC"
                                   data={expenses}
                                   innerRadius={0}
                                   outerRadius={100}
-                                  type={0}></PieChart>
-
-                        <PieChart name="asdf"
+                                  type={0}/>
+                    </div>
+                    <div className="col-span-1 mx-auto px-4 py-6 sm:px-6 lg:px-8">
+                        <PieChart name="incomesPC"
                                   data={incomes}
                                   innerRadius={0}
                                   outerRadius={100}
-                                  type={1}></PieChart>
+                                  type={1}/>
                     </div>
+
                 </div>
 
                 <Tab.Panels>
@@ -122,14 +132,14 @@ export default function Finance({projects, token, userId}) {
                                      name="Expenses"
                                      items={expenses}
                                      frequencyOptions={frequency}
-                                     setItems={setExpenses}></FinanceList>
+                                     setItems={setExpenses}/>
                     </Tab.Panel>
                     <Tab.Panel>
                         <FinanceList type={1}
                                      name="Income"
                                      items={incomes}
                                      frequencyOptions={frequency}
-                                     setItems={setIncomes}></FinanceList>
+                                     setItems={setIncomes}/>
                     </Tab.Panel>
                     <Tab.Panel>
                         <div className="space-y-6 lg:col-start-3 lg:col-span-1">
@@ -167,19 +177,4 @@ export default function Finance({projects, token, userId}) {
 
         </div>
     );
-}
-
-
-export async function getServerSideProps(context) {
-    const {userId, token} = await RedirectUser(context);
-
-    const {projects} = await getProjects(token, userId);
-
-    return {
-        props: {
-            projects,
-            token,
-            userId
-        },
-    };
 }

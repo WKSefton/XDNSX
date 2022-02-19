@@ -5,37 +5,39 @@ import {useEffect, useState} from 'react';
 
 import {magic} from '../lib/magic-client';
 
+const metrics = [
+    {
+        id: 1,
+        stat: '8K+',
+        emphasis: 'Companies',
+        rest: 'use laoreet amet lacus nibh integer quis.',
+    },
+    {
+        id: 2,
+        stat: '25K+',
+        emphasis: 'Countries around the globe',
+        rest: 'lacus nibh integer quis.',
+    },
+    {
+        id: 3,
+        stat: '98%',
+        emphasis: 'Customer satisfaction',
+        rest: 'laoreet amet lacus nibh integer quis.',
+    },
+    {
+        id: 4,
+        stat: '12M+',
+        emphasis: 'Issues resolved',
+        rest: 'lacus nibh integer quis.',
+    },
+];
+
 export default function Login() {
     const [email, setEmail] = useState('');
     const [userMsg, setUserMsg] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const metrics = [
-        {
-            id: 1,
-            stat: '8K+',
-            emphasis: 'Companies',
-            rest: 'use laoreet amet lacus nibh integer quis.',
-        },
-        {
-            id: 2,
-            stat: '25K+',
-            emphasis: 'Countries around the globe',
-            rest: 'lacus nibh integer quis.',
-        },
-        {
-            id: 3,
-            stat: '98%',
-            emphasis: 'Customer satisfaction',
-            rest: 'laoreet amet lacus nibh integer quis.',
-        },
-        {
-            id: 4,
-            stat: '12M+',
-            emphasis: 'Issues resolved',
-            rest: 'lacus nibh integer quis.',
-        },
-    ];
     const router = useRouter();
+
     useEffect(() => {
         const handleComplete = () => {
             setIsLoading(false);
@@ -64,7 +66,7 @@ export default function Login() {
                         },
                     });
                     const loggedInResponse = await response.json();
-                    if (loggedInResponse.done) router.push('/');
+                    if (loggedInResponse.done) await router.push('/');
                     else {
                         setIsLoading(false);
                         setUserMsg('Something Went Wrong Logging In');
@@ -83,10 +85,11 @@ export default function Login() {
     }
 
     return (
-        <>
+        <div id="layout">
             <Head>
                 <title>XDNSX Sign In</title>
             </Head>
+
             <div className="min-h-screen flex">
                 <div className="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
                     <div className="mx-auto w-full max-w-sm lg:w-96">
@@ -319,6 +322,6 @@ export default function Login() {
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     );
 }

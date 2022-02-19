@@ -9,12 +9,6 @@ export default function PieChart(props) {
         innerRadius,
         type
     } = props;
-    const margin = {
-        top: 50, right: 50, bottom: 50, left: 50,
-    };
-
-    const width = 2 * outerRadius + margin.left + margin.right;
-    const height = 2 * outerRadius + margin.top + margin.bottom;
 
     const colorScale = d3
         .scaleSequential()
@@ -35,10 +29,11 @@ export default function PieChart(props) {
         const svg = d3
             .select(`#${name}`)
             .append('svg')
-            .attr('width', width)
-            .attr('height', height)
+            .attr('width', "100%")
+            .attr('height', "100%")
+            .attr("viewBox", "-100, -100, 200, 200")
             .append('g')
-            .attr('transform', `translate(${width / 2}, ${height / 2})`);
+        //.attr('transform', `translate(${width / 2}, ${height / 2})`);
 
         const arcGenerator = d3
             .arc()

@@ -1,18 +1,17 @@
 import {NextResponse} from 'next/server'
 import {verifyToken} from '../lib/verifyToken';
 
-export async function middleware(req) {
-    const token = req ? req.cookies?.token : null;
+export async function middleware(request) {
+    const token = request ? request.cookies?.token : null;
     const userId = await verifyToken(token);
+    const {pathname} = request.nextUrl;
 
-    const {pathname} = req.nextUrl;
-    if (pathname.includes('/api/login') || userId || pathname.includes('/static')) {
-        //console.log("NEXT", pathname, userId)
+    console.log({token}, {userId}, {pathname})
+
+    if (pathname.includes('/api/login') || userId)
         return NextResponse.next();
-    }
-    //console.log(token, pathname)
-    if (!token && pathname !== '/login') {
-        //console.log("LOGIN", pathname)
+
+    if (!token && pathname !== '/login')
         return NextResponse.redirect('/login');
-    }
+
 }
